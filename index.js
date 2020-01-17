@@ -2,7 +2,13 @@ function main() {
     const canvas = document.querySelector("#glCanvas");
     // Initialize the GL context
     const gl = canvas.getContext("webgl");
-  
+    var vertices = [
+      -0.5,0.5,0.0,
+      -0.5,-0.5,0.0,
+       0.5,-0.5,0.0, 
+    ];
+
+    var incidces = [0, 1, 2];
     // Only continue if WebGL is available and working
     if (gl === null) {
       alert("Unable to initialize WebGL. Your browser or machine may not support it.");

@@ -1,33 +1,31 @@
-
-
 class Circle {
-    vbo;
-    vao;
-
     constructor(x, y, radius, shader, NumSlices) {
       this.x = x;
       this.y = y;
       this.Radius = radius;
       this.Shader = shader;
       this.NumSlices = NumSlices;
+      this.vbo = 0;
+      this. vao = 0;
+      this.vertices = [];
       this.generate();
     }
 
     generate(){
         /** Generates the Points around the circle **/
-        var vertices = [];
         var k = 0;
         for(var i = 0; i < 360; i += 10){
-            vertices[k] = [this.x + Math.cos(i)*this.Radius, this.y + Math.sin(i)*this.Radius];
+            this.vertices[k] = [this.x + Math.cos(i)*this.Radius, this.y + Math.sin(i)*this.Radius];
             k++;
         }
-        /********************************************/
-        /*
-        //Print points to screen
-        for(var j = 0; j < k; j++){
-            document.write(vertices[j] + "<br>");
-        }*/
         
+    }
+
+    printVertices(){
+        //Print points to screen
+        for(var j = 0; j < this.vertices.length; j++){
+            document.write(this.vertices[j] + "<br>");
+        }
     }
 
     setx(x){
@@ -61,11 +59,9 @@ class Circle {
     getNumSlices(){
         return this.NumSlices;
     }
+
+    getVertices(){
+        return this.vertices;
+    }
     
   }
-/*
-  function main() {
-    const c = new Circle(50, 50, 50, 0);
-  }
-
-  window.onload = main;*/

@@ -18,7 +18,7 @@ class Circle {
         var vertices = [];
         var k = 0;
         for(var i = 0; i < 360; i += 10){
-            vertices[k] = [Math.cos(i)*this.Radius, Math.sin(i)*this.Radius];
+            vertices[k] = [this.x + Math.cos(i)*this.Radius, this.y + Math.sin(i)*this.Radius];
             k++;
         }
         /********************************************/

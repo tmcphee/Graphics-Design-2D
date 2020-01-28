@@ -53,18 +53,21 @@ function main() {
       this.NumSlices = NumSlices;
       this.vbo;
       this.vao;
-      this.vertices = [x, y];
+      //this.vertices = [x, y];
+      //this.generate();
+      this.vertices = [x, y, 0];
       this.generate();
       this.genBuffers(gl);
     }
 
     generate(){
         /** Generates the Points around the circle **/
-        var k = 2;
-        for(var i = 0; i < 360; i += 10){
+        var k = 3;
+        for(var i = 0; i < 360; i += 1){
             this.vertices[k] = [this.x + Math.cos(i)*this.Radius];
             this.vertices[k + 1] = [this.y + Math.sin(i)*this.Radius];
-            k += 2;
+            this.vertices[k + 2] = 0;
+            k += 3;
         }
     }
 
@@ -123,7 +126,7 @@ function main() {
       gl.useProgram(shaderProgram);
       gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
       var vpos = gl.getAttribLocation(shaderProgram, "vposition");
-      gl.vertexAttribPointer(vpos, 2, gl.FLOAT, false, 0, 0);
+      gl.vertexAttribPointer(vpos, 3, gl.FLOAT, false, 0, 0);
       gl.enableVertexAttribArray(vpos);
        // Clear the canvas
        
@@ -138,6 +141,6 @@ function main() {
        gl.viewport(0,0,canvas.width,canvas.height);
 
        // Draw the triangle
-       gl.drawArrays(gl.TRIANGLE_FAN, 0, 37);
+       gl.drawArrays(gl.TRIANGLE_FAN, 0, 360);
     }
   }

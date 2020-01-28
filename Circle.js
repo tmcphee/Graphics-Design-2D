@@ -1,30 +1,32 @@
 class Circle {
-    constructor(x, y, radius, shader, NumSlices) {
+    constructor(x, y, radius, shader, NumSlices, gl) {
       this.x = x;
       this.y = y;
       this.Radius = radius;
       this.Shader = shader;
       this.NumSlices = NumSlices;
-      this.vbo = 0;
-      this. vao = 0;
-      this.vertices = [];
+      this.vbo;
+      this.vao;
+      this.vertices = [x, y];
       this.generate();
+      this.genBuffers(gl);
     }
 
     generate(){
         /** Generates the Points around the circle **/
-        var k = 0;
+        var k = 2;
         for(var i = 0; i < 360; i += 10){
-            this.vertices[k] = [this.x + Math.cos(i)*this.Radius, this.y + Math.sin(i)*this.Radius];
-            k++;
+            this.vertices[k] = [this.x + Math.cos(i)*this.Radius];
+            this.vertices[k + 1] = [this.y + Math.sin(i)*this.Radius];
+            k += 2;
         }
-        
     }
 
     printVertices(){
         //Print points to screen
         for(var j = 0; j < this.vertices.length; j++){
-            document.write(this.vertices[j] + "<br>");
+          //  document.write(this.vertices[j] + "<br>");
+          console.log("Vertex " + j +  ": " + this.vertices[j]);
         }
     }
 
@@ -64,11 +66,32 @@ class Circle {
         return this.vertices;
     }
 
-    draw(gl){
-        gl.glEnableClientState(GL_VERTEX_ARRAY);
-        gl.glVertexPointer(3, GL_FLOAT, 0, this.vertices);
-        gl.glDrawArrays(GL_TRIANGLE_FAN, 0, 360);
-        gl.glDisableClientState(GL_VERTEX_ARRAY);
+    genBuffers(gl){
+      this.vbo = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
+      gl.bindBuffer(gl.ARRAY_BUFFER, null);
     }
-    
+
+    draw(gl, shaderProgram, canvas){
+      gl.useProgram(shaderProgram);
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
+      var vpos = gl.getAttribLocation(shaderProgram, "vposition");
+      gl.vertexAttribPointer(vpos, 2, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(vpos);
+       // Clear the canvas
+       
+
+       // Enable the depth test
+       gl.enable(gl.DEPTH_TEST);
+
+       // Clear the color and depth buffer
+       
+
+       // Set the view port
+       gl.viewport(0,0,canvas.width,canvas.height);
+
+       // Draw the triangle
+       gl.drawArrays(gl.TRIANGLE_FAN, 0, 37);
+    }
   }

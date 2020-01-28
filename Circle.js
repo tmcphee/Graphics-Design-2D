@@ -63,5 +63,12 @@ class Circle {
     getVertices(){
         return this.vertices;
     }
+
+    draw(gl){
+        gl.glEnableClientState(GL_VERTEX_ARRAY);
+        gl.glVertexPointer(3, GL_FLOAT, 0, this.vertices);
+        gl.glDrawArrays(GL_TRIANGLE_FAN, 0, 360);
+        gl.glDisableClientState(GL_VERTEX_ARRAY);
+    }
     
   }

@@ -28,6 +28,18 @@ class Circle {
         }
     }
 
+    //Pass a second circle object and check with current circle object
+    collision(object){
+        var dx = this.x - object.x;
+        var dy = this.y - object.y;
+        var d = Math.sqrt(dx * dx + dy * dy);
+
+        if(d < this.Radius + object.Radius){
+            return true;
+        }
+        return false;
+    }
+
     setx(x){
         this.x = x;
     }
@@ -59,7 +71,6 @@ class Circle {
     getNumSlices(){
         return this.NumSlices;
     }
-
     getVertices(){
         return this.vertices;
     }

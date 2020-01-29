@@ -96,6 +96,17 @@ function main() {
         }
     }
 
+    collision(object){
+        var dx = this.x - object.x;
+        var dy = this.y - object.y;
+        var d = Math.sqrt(dx * dx + dy * dy);
+
+        if(d < this.Radius + object.Radius){
+            return true;
+        }
+        return false;
+    }
+
     printIndices(){
         //Print points to screen
         for(var j = 0; j < this.indices.length; j++){
@@ -135,7 +146,6 @@ function main() {
     getNumSlices(){
         return this.NumSlices;
     }
-
     getVertices(){
         return this.vertices;
     }

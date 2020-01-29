@@ -19,18 +19,24 @@ function main() {
     gl.attachShader(program, vshader);
     gl.attachShader(program, fshader);
     gl.linkProgram(program);
-    const c = new Circle(-0.4, -0.3, 0.3, program, gl);
-    const c2 = new Circle(0.6,  0.3, 0.3, program, gl);
+    var circles = [];
+    circles[circles.length] = new Circle(0, 0, 0.3, program, gl);
+    circles[circles.length] = new Circle(-0.4, -0.6, 0.3, program, gl);
+    circles[circles.length] = new Circle(0.4, 0.6, 0.3, program, gl);
+    //const c2 = new Circle(0.6,  0.3, 0.3, program, gl);
     gl.enable(gl.DEPTH_TEST);
 
     var mouseClick = function(e) {
         const rect = canvas.getBoundingClientRect()
         var x = event.clientX - rect.left
         var y = event.clientY - rect.top
-        x = x/rect.left;
-        y = y/rect.top;
-        console.log("x: " + x + "y: " + y);
-        c.collision(x, y);
+        x = (x/rect.right) * 2;
+        y = (y/rect.bottom) * 2;
+        x = x - 1;
+        y = (y - 1) * -1;
+        for (var i = 0; i < circles.length; i++){
+            circles[i].collision(x, y);
+        }
      };
     canvas.addEventListener("click", mouseClick, false);
     
@@ -39,7 +45,9 @@ function main() {
     	//Draw loop
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        c.draw(canvas);
+        for (var i = 0; i < circles.length; i++){
+            circles[i].draw(canvas);
+        }
     	window.requestAnimationFrame(animate);
     }
   }
@@ -115,15 +123,14 @@ function main() {
     }
 
     collision(X, Y){
-        var dx = this.x - X;
-        var dy = this.y - Y;
-        var d = Math.sqrt(dx * dx + dy * dy);
-
-        if(d < this.Radius + 1){
+        var dx = X - this.x;
+        var dy = Y - this.y;
+        var d = Math.sqrt( (dx * dx) + (dy * dy));
+        if(d <= (this.Radius)){
             console.log("Collision Detected");
+            console.log(" ");
             return true;
         }
-        console.log("No Collision");
         return false;
     }
 

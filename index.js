@@ -18,14 +18,13 @@ function main() {
     gl.attachShader(program, vshader);
     gl.attachShader(program, fshader);
     gl.linkProgram(program);
-    const c = new Circle(-0.4, -0.3, 0.3, 12, 0, gl);
-    const c2 = new Circle(0.6, 0, 0.4, 12, 0, gl);
+    const c = new Circle(-0.4, -0.3, 0.3, program, gl);
+    const c2 = new Circle(0.6,  0.3, 0.3, program, gl);
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     
-    c.draw(gl, program, canvas);
-    c2.draw(gl, program, canvas);
-   // c.printVertices();
+    c.draw(canvas);
+    c2.draw(canvas);
   }
 
   function createShader (gl, sourceCode, type) {
@@ -45,38 +44,64 @@ function main() {
   window.onload = main;
 
   class Circle {
-    constructor(x, y, radius, shader, NumSlices, gl) {
+    constructor(x, y, radius, shader, gl) {
       this.x = x;
       this.y = y;
+      this.gl = gl;
       this.Radius = radius;
-      this.Shader = shader;
-      this.NumSlices = NumSlices;
+      this.shaderProgram = shader;
       this.vbo;
-      this.vao;
-      //this.vertices = [x, y];
-      //this.generate();
+      this.indexbuffer;
       this.vertices = [x, y, 0];
+      this.indices = [0];
+      this.numIndices = 0;
       this.generate();
       this.genBuffers(gl);
     }
 
     generate(){
         /** Generates the Points around the circle **/
-        var k = 3;
-        for(var i = 0; i < 360; i += 1){
-            this.vertices[k] = [this.x + Math.cos(i)*this.Radius];
-            this.vertices[k + 1] = [this.y + Math.sin(i)*this.Radius];
-            this.vertices[k + 2] = 0;
-            k += 3;
+        var tempX;
+        var tempY;
+        var found = 0;
+       // var k = 3;
+        for(var i = 0; i < 360; i += 6){
+            tempX = [this.x + Math.cos(i)*this.Radius];
+            tempY = [this.y + Math.sin(i)*this.Radius*1.3];
+            
+            for (var j = 0; j < this.vertices.length; j += 3){
+                if (this.vertices[j] == tempX && this.vertices[j + 1] == tempY){
+                   this.indices[this.indices.length] = [j];
+                   found = 1;
+                   break;
+                }
+            }
+        
+        if (found == 0){
+            this.vertices[this.vertices.length] = tempX;
+            this.vertices[this.vertices.length] = tempY;
+            this.vertices[this.vertices.length] = 0;
+            this.indices[this.indices.length] = this.indices.length;
+            this.numIndices++;
         }
+        
+        }
+        this.indices[this.indices.length] = this.indices[this.indices.length - 1];
     }
 
     printVertices(){
         //Print points to screen
         for(var j = 0; j < this.vertices.length; j++){
-          //  document.write(this.vertices[j] + "<br>");
           console.log("Vertex " + j +  ": " + this.vertices[j]);
         }
+    }
+
+    printIndices(){
+        //Print points to screen
+        for(var j = 0; j < this.indices.length; j++){
+          console.log("Inices " + j +  ": " + this.indices[j]);
+        }
+        console.log("Num Indices:" + this.numIndices);
     }
 
     setx(x){
@@ -120,14 +145,21 @@ function main() {
       gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
       gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+      this.indexbuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexbuffer);
+      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.indices), gl.STATIC_DRAW);
     }
 
-    draw(gl, shaderProgram, canvas){
+    draw(canvas){
+      var gl = this.gl;
+      var shaderProgram = this.shaderProgram;
       gl.useProgram(shaderProgram);
       gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
       var vpos = gl.getAttribLocation(shaderProgram, "vposition");
       gl.vertexAttribPointer(vpos, 3, gl.FLOAT, false, 0, 0);
       gl.enableVertexAttribArray(vpos);
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexbuffer);
        // Clear the canvas
        
 
@@ -141,6 +173,6 @@ function main() {
        gl.viewport(0,0,canvas.width,canvas.height);
 
        // Draw the triangle
-       gl.drawArrays(gl.TRIANGLE_FAN, 0, 360);
+       gl.drawElements(gl.TRIANGLE_FAN, this.numIndices + 1, gl.UNSIGNED_SHORT, 0);
     }
   }

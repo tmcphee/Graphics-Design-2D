@@ -1,3 +1,5 @@
+
+
 function main() {
     const canvas = document.querySelector("#glCanvas");
     // Initialize the GL context
@@ -13,19 +15,35 @@ function main() {
     +'}'
     var vshader = createShader(gl, vs, gl.VERTEX_SHADER);
     var fshader = createShader(gl, fs, gl.FRAGMENT_SHADER);
-
     var program = gl.createProgram();
     gl.attachShader(program, vshader);
     gl.attachShader(program, fshader);
     gl.linkProgram(program);
     const c = new Circle(-0.4, -0.3, 0.3, program, gl);
     const c2 = new Circle(0.6,  0.3, 0.3, program, gl);
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gl.enable(gl.DEPTH_TEST);
+
+    var mouseClick = function(e) {
+        const rect = canvas.getBoundingClientRect()
+        var x = event.clientX - rect.left
+        var y = event.clientY - rect.top
+        x = x/rect.left;
+        y = y/rect.top;
+        console.log("x: " + x + "y: " + y);
+        c.collision(x, y);
+     };
+    canvas.addEventListener("click", mouseClick, false);
     
-    c.draw(canvas);
-    c2.draw(canvas);
+    window.requestAnimationFrame(animate);
+    function animate (time) {
+    	//Draw loop
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        c.draw(canvas);
+    	window.requestAnimationFrame(animate);
+    }
   }
+
 
   function createShader (gl, sourceCode, type) {
     // Compiles either a shader of type gl.VERTEX_SHADER or gl.FRAGMENT_SHADER
@@ -96,14 +114,16 @@ function main() {
         }
     }
 
-    collision(object){
-        var dx = this.x - object.x;
-        var dy = this.y - object.y;
+    collision(X, Y){
+        var dx = this.x - X;
+        var dy = this.y - Y;
         var d = Math.sqrt(dx * dx + dy * dy);
 
-        if(d < this.Radius + object.Radius){
+        if(d < this.Radius + 1){
+            console.log("Collision Detected");
             return true;
         }
+        console.log("No Collision");
         return false;
     }
 
@@ -170,19 +190,11 @@ function main() {
       gl.vertexAttribPointer(vpos, 3, gl.FLOAT, false, 0, 0);
       gl.enableVertexAttribArray(vpos);
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexbuffer);
-       // Clear the canvas
-       
-
-       // Enable the depth test
-       gl.enable(gl.DEPTH_TEST);
-
-       // Clear the color and depth buffer
-       
 
        // Set the view port
        gl.viewport(0,0,canvas.width,canvas.height);
 
-       // Draw the triangle
+       //Draw the triangle
        gl.drawElements(gl.TRIANGLE_FAN, this.numIndices + 1, gl.UNSIGNED_SHORT, 0);
     }
   }

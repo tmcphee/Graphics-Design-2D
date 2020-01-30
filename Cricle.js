@@ -1,7 +1,9 @@
 //Circle Class, Could also be called Bacteria
 class Circle {
     constructor(x, y, radius, shader, gl) {
-      //Initalise Variables such as X position Y position, GL context, radius, pointer to shader program, Vertex Buffer, Index Buffer, vertices, indices, and the number of Indices
+      /*Initalise Variables such as X position Y position, GL context, radius, pointer 
+      to shader program, Vertex Buffer, Index Buffer, vertices, indices, and the number 
+      of Indices*/
       this.x = x;
       this.y = y;
       this.gl = gl;
@@ -121,6 +123,10 @@ class Circle {
     }
     getVertices(){
         return this.vertices;
+    }
+
+    getRandomPoint(){
+        return this.vertices[Math.floor(Math.random()*(this.vertices.length))];
     }
 
     genBuffers(gl){

@@ -13,7 +13,7 @@ function main() {
     //initialise fragment shader
     var fs =
    ' void main(){'+
-   ' gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);'
+   ' gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);'
     +'}'
     //Compile and attach shader to GL context
     var vshader = createShader(gl, vs, gl.VERTEX_SHADER);

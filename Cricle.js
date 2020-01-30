@@ -126,7 +126,18 @@ class Circle {
     }
 
     getRandomPoint(){
-        return this.vertices[Math.floor(Math.random()*(this.vertices.length))];
+        var rand = Math.floor(Math.random()*(this.vertices.length));
+        // return this.vertices[Math.floor(Math.random()*(this.vertices.length))];
+        if (rand == 0)
+            rand+= 3
+        if (rand == 1)
+            rand+=2;
+        if (rand == 2)
+            rand++;
+        if (this.vertices[rand] == 0)
+            rand -= 2;
+        var temp = [this.vertices[rand], this.vertices[rand+1]];
+        return temp;
     }
 
     genBuffers(gl){

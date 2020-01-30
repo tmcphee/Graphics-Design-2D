@@ -30,7 +30,7 @@ function main() {
     circles[circles.length] = new Circle(0, 0, 0.1, program, gl);
     circles[circles.length] = new Circle(-0.4, -0.6, 0.1, program, gl);
     circles[circles.length] = new Circle(0.4, 0.6, 0.03, program, gl);
-
+    
     //Function to detect mouse clicks
     var mouseClick = function(e) {
         const rect = canvas.getBoundingClientRect()
@@ -51,7 +51,11 @@ function main() {
     //Game Loop (Needed so window only draws circles 60 times per second)
     window.requestAnimationFrame(animate);
     function animate (time) {
-        gameloop();
+        circles[circles.length] = gameloop(circles[0],program, gl);
+        temp = circles[0].getRandomPoint();
+        //console.log("X: " + temp[0] + " Y: " + temp[1]);
+        //return (new Circle(temp[0], temp[1], 0.9, shader, gl));
+        circles[circles.length] = new Circle(temp[0], temp[1], 0.9, program, gl);
     	//Draw loop
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);

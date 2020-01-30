@@ -1,5 +1,3 @@
-
-
 function main() {
     const canvas = document.querySelector("#glCanvas");
     // Initialize the GL context

@@ -25,7 +25,7 @@ function main() {
     gl.linkProgram(program);
     
     //Create Circles
-    var circles = [new Circle(0, 0, 1, program, gl)];
+    var circles = [new Circle(0, 0, 0.85, program, gl)];
     
     circles[0].setPetri();
     //Function to detect mouse clicks

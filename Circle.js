@@ -105,6 +105,7 @@ class Circle {
 
     setPetri(){
         this.petri = true;
+        this.colour = [0.5, 0.5, 0.5, 1.0];
     }
     
     getx(){

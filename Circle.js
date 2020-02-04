@@ -15,6 +15,7 @@ class Circle {
       this.vertices = [x, y, 0];
       this.indices = [0];
       this.numIndices = 0;
+      this.colour = [x, y, 0.5, 1];
       //Generate points of the circle
       this.generate();
 
@@ -104,6 +105,7 @@ class Circle {
 
     setPetri(){
         this.petri = true;
+        this.colour = [0.5, 0.5, 0.5, 1.0];
     }
     
     getx(){
@@ -134,10 +136,11 @@ class Circle {
             rand+=2;
         if (rand == 2)
             rand++;
-        if (this.vertices[rand] == 0)
-            rand -= 2;
-        var temp = [this.vertices[rand], this.vertices[rand+1]];
-        return temp;
+        if (rand % 3 != 0)
+            while ((rand % 3) != 0){
+                rand--;
+            }
+        return [this.vertices[rand], this.vertices[rand+1]];
     }
 
     genBuffers(gl){
@@ -166,7 +169,9 @@ class Circle {
         gl.vertexAttribPointer(vpos, 3, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(vpos);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexbuffer);
-
+        var fColorLocation = gl.getUniformLocation(shaderProgram, "fColor");
+        gl.uniform4f(fColorLocation, this.colour[0], this.colour[1], this.colour[2], this.colour[3]);
+        
         // Set the view port
         gl.viewport(0,0,canvas.width,canvas.height);
 

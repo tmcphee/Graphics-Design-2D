@@ -1,69 +1,54 @@
 //Circle Class, Could also be called Bacteria
 class Circle {
     constructor(x, y, radius, shader, gl) {
-      /*Initalise Variables such as X position Y position, GL context, radius, pointer 
-      to shader program, Vertex Buffer, Index Buffer, vertices, indices, and the number 
-      of Indices*/
-      this.x = x;
-      this.y = y;
-      this.gl = gl;
-      this.Radius = radius;
-      this.shaderProgram = shader;
-      this.vbo;
-      this.petri = false;
-      this.indexbuffer;
-      this.vertices = [x, y, 0];
-      this.indices = [0];
-      this.numIndices = 0;
-      this.colour = [x, y, 0.5, 1];
-      this.complete = false;
-      //Generate points of the circle
-      this.generate();
+        /*Initalise Variables such as X position Y position, GL context, radius, pointer 
+        to shader program, Vertex Buffer, Index Buffer, vertices, indices, and the number 
+        of Indices*/
+        this.x = x;
+        this.y = y;
+        this.gl = gl;
+        this.Radius = radius;
+        this.shaderProgram = shader;
+        this.vbo;
+        this.petri = false;
+        this.indexbuffer;
+        this.vertices = [x, y, 0];
+        this.indices = [0];
+        this.numIndices = 0;
+        this.colour = [x + 0.2, y + 0.2, 0.5, 1];
+        this.complete = false;
+        //Generate points of the circle
+        this.generate();
 
-      //Generate vertex buffer and index buffer
-      this.genBuffers(gl);
+        //Generate vertex buffer and index buffer
+        this.genBuffers(gl);
     }
 
-    generate(){
+    generate() {
         /** Generates the Points around the circle **/
         var tempX;
         var tempY;
-        var found = 0;
         //Loop through for all 360 (2pi) degrees of a circle
-        for(var i = 0; i < 6.3; i += 0.1){
+        for (var i = 0; i < 6.3; i += 0.1) {
             //Get the X and Y coord of next point
-            tempX = [this.x + Math.cos(i)*this.Radius];
-            tempY = [this.y + Math.sin(i)*this.Radius];
-            
-            //Loop through list of vertices, If this X and Y already exist, use that index
-            for (var j = 0; j < this.vertices.length; j += 3){
-                if (this.vertices[j] == tempX && this.vertices[j + 1] == tempY){
-                   this.indices[this.indices.length] = [j];
-                   found = 1;
-                   break;
-                }
-            }
-        //If Point is unique, add point to vertices[] and create new index
-        if (found == 0){
-            this.vertices[this.vertices.length] = tempX;
-            this.vertices[this.vertices.length] = tempY;
+            this.vertices[this.vertices.length] = [this.x + Math.cos(i) * this.Radius];
+            this.vertices[this.vertices.length] = [this.y + Math.sin(i) * this.Radius];
             this.vertices[this.vertices.length] = 0;
             this.indices[this.indices.length] = this.indices.length;
             this.numIndices++;
-        }
-        
+
         }
         this.indices[this.indices.length] = this.indices[this.indices.length - 1];
     }
 
-    printVertices(){
+    printVertices() {
         //Print points to screen
-        for(var j = 0; j < this.vertices.length; j++){
-          console.log("Vertex " + j +  ": " + this.vertices[j]);
+        for (var j = 0; j < this.vertices.length; j++) {
+            console.log("Vertex " + j + ": " + this.vertices[j]);
         }
     }
 
-    collision(X, Y){
+    collision(X, Y) {
         //If circle is the background
         if (this.petri == true)
             return false;
@@ -71,91 +56,88 @@ class Circle {
         var dx = X - this.x;
         var dy = Y - this.y;
         //equation for finding how far click was from center of circle
-        var d = Math.sqrt( (dx * dx) + (dy * dy));
+        var d = Math.sqrt((dx * dx) + (dy * dy));
         //If the point clicked is inside the radius of the circle, return true, otherwise return false
-        if(d <= (this.Radius)){
+        if (d <= (this.Radius)) {
             console.log("Hit");
             return true;
         }
         return false;
     }
 
-    printIndices(){
+    printIndices() {
         //Print points to screen
-        for(var j = 0; j < this.indices.length; j++){
-          console.log("Inices " + j +  ": " + this.indices[j]);
+        for (var j = 0; j < this.indices.length; j++) {
+            console.log("Inices " + j + ": " + this.indices[j]);
         }
         console.log("Num Indices:" + this.numIndices);
     }
 
-    setx(x){
+    setx(x) {
         this.x = x;
     }
-    sety(y){
+    sety(y) {
         this.y = y;
     }
-    setRadius(radius){
+    setRadius(radius) {
         this.Radius = radius;
     }
-    setShader(shader){
+    setShader(shader) {
         this.Shader = shader;
     }
-    setNumSlices(NumSlices){
+    setNumSlices(NumSlices) {
         this.NumSlices = NumSlices;
     }
-
-    setPetri(){
+    setPetri() {
         this.petri = true;
-        this.colour = [0.5, 0.5, 0.5, 1.0];
+        this.colour = [1, 0.85, 1, 1]
     }
-
     setVertices(vertices) {
         this.vertices = vertices
-    }   
-
+    }
     setComplete(set) {
         this.complete = set;
     }
 
-    getx(){
+    getx() {
         return this.x;
     }
-    gety(){
+    gety() {
         return this.y;
     }
-    getRadius(){
+    getRadius() {
         return this.Radius;
     }
-    getShader(){
+    getShader() {
         return this.Shader;
     }
-    getNumSlices(){
+    getNumSlices() {
         return this.NumSlices;
     }
-    getVertices(){
+    getVertices() {
         return this.vertices;
     }
-    getComplete(){
+    getComplete() {
         return this.complete;
     }
 
-    getRandomPoint(){
-        var rand = Math.floor(Math.random()*(this.vertices.length));
+    getRandomPoint() {
+        var rand = Math.floor(Math.random() * (this.vertices.length));
         // return this.vertices[Math.floor(Math.random()*(this.vertices.length))];
         if (rand == 0)
-            rand+= 3
+            rand += 3
         if (rand == 1)
-            rand+=2;
+            rand += 2;
         if (rand == 2)
             rand++;
         if (rand % 3 != 0)
-            while ((rand % 3) != 0){
+            while ((rand % 3) != 0) {
                 rand--;
             }
-        return [this.vertices[rand], this.vertices[rand+1]];
+        return [this.vertices[rand], this.vertices[rand + 1]];
     }
 
-    genBuffers(gl){
+    genBuffers(gl) {
         //Generate a vertex buffer and give it our vertices
         this.vbo = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
@@ -168,7 +150,7 @@ class Circle {
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.indices), gl.STATIC_DRAW);
     }
 
-    draw(canvas){
+    draw(canvas) {
         //define local "gl" variable so it's easier to call, same for shader
         var gl = this.gl;
         var shaderProgram = this.shaderProgram;
@@ -183,11 +165,11 @@ class Circle {
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexbuffer);
         var fColorLocation = gl.getUniformLocation(shaderProgram, "fColor");
         gl.uniform4f(fColorLocation, this.colour[0], this.colour[1], this.colour[2], this.colour[3]);
-        
+
         // Set the view port
-        gl.viewport(0,0,canvas.width,canvas.height);
+        gl.viewport(0, 0, canvas.width, canvas.height);
 
         //Draw the triangle
         gl.drawElements(gl.TRIANGLE_FAN, this.numIndices + 1, gl.UNSIGNED_SHORT, 0);
     }
-  }
+}

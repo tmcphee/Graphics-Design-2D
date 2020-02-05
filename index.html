@@ -3,8 +3,21 @@
         <script src="gameloop.js"></script>
         <script src="Circle.js"></script>
         <script src="index.js"></script>
-    </header>
+        <style>
+        #wrapper{
+            position:relative;
+            width:300px;
+            height:200px;
+        }
+        #score{
+            position:absolute; top:20px; left:450px;
+        }
+        </style>
+    </header>   
     <body>
-        <canvas id="glCanvas" width="640" height="640"></canvas>
+        <div id="wrapper">
+            <canvas id="glCanvas" width="720" height="720"></canvas>
+            <canvas id="score" width="400" height="200"></canvas>
+        </div>
     </body>
 </html>

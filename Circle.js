@@ -16,6 +16,7 @@ class Circle {
       this.indices = [0];
       this.numIndices = 0;
       this.colour = [x, y, 0.5, 1];
+      this.complete = false;
       //Generate points of the circle
       this.generate();
 
@@ -28,8 +29,8 @@ class Circle {
         var tempX;
         var tempY;
         var found = 0;
-        //Loop through for all 360 degrees of a circle
-        for(var i = 0; i < 360; i += 0.3){
+        //Loop through for all 360 (2pi) degrees of a circle
+        for(var i = 0; i < 6.3; i += 0.1){
             //Get the X and Y coord of next point
             tempX = [this.x + Math.cos(i)*this.Radius];
             tempY = [this.y + Math.sin(i)*this.Radius];
@@ -107,7 +108,15 @@ class Circle {
         this.petri = true;
         this.colour = [0.5, 0.5, 0.5, 1.0];
     }
-    
+
+    setVertices(vertices) {
+        this.vertices = vertices
+    }   
+
+    setComplete(set) {
+        this.complete = set;
+    }
+
     getx(){
         return this.x;
     }
@@ -125,6 +134,9 @@ class Circle {
     }
     getVertices(){
         return this.vertices;
+    }
+    getComplete(){
+        return this.complete;
     }
 
     getRandomPoint(){

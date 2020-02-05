@@ -1,7 +1,10 @@
 function main() {
+    console.log("hi")
     const canvas = document.querySelector("#glCanvas");
+    const scoreCanvas = document.getElementById("score");
     // Initialize the GL context
     const gl = canvas.getContext("webgl");
+    const ctx = scoreCanvas.getContext("2d");
     //Initialise vertex shader
     var vs = 
     'attribute vec3 vposition;'
@@ -25,9 +28,13 @@ function main() {
     gl.linkProgram(program);
     
     //Create Circles
-    var circles = [new Circle(0, 0, 0.85, program, gl)];
+    var circles = [new Circle(0, 0, 0.65, program, gl)];
     
     circles[0].setPetri();
+
+    var score = 0;
+    drawScore(score, ctx)
+
     //Function to detect mouse clicks
     var mouseClick = function(e) {
         const rect = canvas.getBoundingClientRect()
@@ -38,10 +45,12 @@ function main() {
         x = x - 1;
         y = (y - 1) * -1;
         for (var i = 0; i < circles.length; i++){
-            if (circles[i] != null)
-                if (circles[i].collision(x, y))
-                    circles[i] = null;
+            if (circles[i] != null && circles[i].collision(x, y)) {
+              score = score + ((0.35 - circles[i].getRadius()) * 10)
+              circles[i] = null;
+            }
         }
+        circles = circles.filter(x => x != null);
      };
     canvas.addEventListener("click", mouseClick, false);
     //Game Loop (Needed so window only draws circles 60 times per second)
@@ -49,18 +58,22 @@ function main() {
     var found = false;
     //circles[circles.length] = gameloop(circles[0], program, gl);
     window.requestAnimationFrame(animate);
-    
+
     function animate (time) {
-        c =  gameloop(circles[0], program, gl);
+      c = gameloop(circles, program, gl);
+      if (c != null) {
         circles[circles.length] = c;
-    	//Draw loop
-        gl.clearColor(0.0, 0.0, 0.0, 1.0);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        for (var i = 0; i < circles.length; i++){
-            if (circles[i] != null)
-                circles[i].draw(canvas);
-        }
-    	window.requestAnimationFrame(animate);
+      }
+      circles = scale(circles, gl, 1.003)
+      //Draw loop
+      gl.clearColor(0.0, 0.0, 0.0, 1.0);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      for (var i = 0; i < circles.length; i++){
+        circles[i].draw(canvas);
+      }
+      drawScore(score, ctx)
+      endGame(circles);
+  	  window.requestAnimationFrame(animate);
     }
   }
 

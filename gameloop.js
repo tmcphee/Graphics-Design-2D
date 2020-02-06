@@ -60,3 +60,15 @@ function drawGameOver(ctx) {
     ctx.fillStyle = gradient;
     ctx.fillText("GAMEOVER", 1, 30);
 }
+
+function checkCollision(circles, index) {
+    console.log(circles[index])
+    for (var i = 1; i < circles.length; i++) {
+        if (i == index || circles[i] == null)
+            continue;
+        if (circles[i].collision2(circles[index]))
+            return i;
+    }
+    return -1;
+}
+

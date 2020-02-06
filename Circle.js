@@ -29,7 +29,7 @@ class Circle {
         var tempX;
         var tempY;
         //Loop through for all 360 (2pi) degrees of a circle
-        for (var i = 0; i < 6.3; i += 0.1) {
+        for (var i = 0; i < 7; i += 0.1) {
             //Get the X and Y coord of next point
             this.vertices[this.vertices.length] = [this.x + Math.cos(i) * this.Radius];
             this.vertices[this.vertices.length] = [this.y + Math.sin(i) * this.Radius];
@@ -63,6 +63,37 @@ class Circle {
             return true;
         }
         return false;
+    }
+
+    collision2(circle) {
+        //If circle is the background
+        if (this.petri == true)
+            return false;
+        //Get the difference in x and y coords
+        var dx = this.x - circle.getx()
+        var dy = this.y - circle.gety();
+        //equation for finding how far click was from center of circle
+        var d = Math.sqrt((dx * dx) + (dy * dy));
+        //If the point clicked is inside the radius of the circle, return true, otherwise return false
+        if (d <= (this.Radius + circle.getRadius())) {
+            return true;
+        }
+        return false;
+    }
+
+    absorb(circle, gl) {
+        var a1 = ((this.getRadius() * this.getRadius()) * 3.14)
+        var a2 = (((circle.getRadius() * circle.getRadius()) * 3.14) / 10)
+        var newRadius = Math.sqrt(((a1 + a2) / 3.14))
+        if (newRadius > 0.3)
+            newRadius = 0.3
+        console.log(a1)
+        console.log(a2)
+        console.log(newRadius)
+        this.setRadius(newRadius) 
+        this.generate()
+        this.genBuffers(gl)
+        return this;
     }
 
     printIndices() {

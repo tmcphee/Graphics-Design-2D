@@ -62,8 +62,6 @@ function main() {
     y = (y / rect.bottom) * 2;
     x = x - 1;
     y = (y - 1) * -1;
-    console.log(x)
-    console.log(y)
     for (var i = 0; i < circles.length; i++) {
       if (circles[i] != null && circles[i].collision(x, y)) {
         score = score + ((0.31 - circles[i].getRadius()) * 10)
@@ -78,16 +76,30 @@ function main() {
 
   function animate(time) {
     var c = gameloop(circles, program, gl);
-    if (c != null) {
+
+    if (c != null && !(circles.map(x => x.collision2(c)).includes(true))) {
       circles[circles.length] = c;
     }
+
     circles = scale(circles, gl, 1.003)
     //Draw loop
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    for (var i = 0; i < circles.length; i++) {
-      circles[i].draw(canvas);
+    circles[0].draw(canvas);
+    for (var i = 1; i < circles.length; i++) {
+      if (circles[i] == null)
+        continue;
+      var check = checkCollision(circles, i)
+      if (check == -1) {
+        circles[i].draw(canvas);
+      } else if (check > i) {
+        circles[i] = circles[i].absorb(circles[check], gl);
+        circles[check] = null;
+        circles[i].draw(canvas);
+      }
     }
+    circles = circles.filter(x => x != null);
+
     drawScore(score, ctx)
     if (!endGame(circles))
       window.requestAnimationFrame(animate);

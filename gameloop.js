@@ -12,7 +12,19 @@ function scale(circles, gl, speed) {
         return circles;
     origin = circles.shift(1);
     circles.map(x => {
-        if (x.getRadius() < 0.3) {
+        if (x.getPoison() == true) {
+            if (x.getRadius() < 1.3) {
+                vertices = x.getVertices()
+                for (var i = 0; i < vertices.length; i += 3) {
+                    vertices[i] = ((vertices[i] - x.getx()) * (0.002 + speed)) + x.getx();
+                    vertices[i + 1] = ((vertices[i + 1] - x.gety()) * (0.002 + speed)) + x.gety();
+                }
+                x.setVertices(vertices);
+                x.setRadius(x.getRadius() * (0.002 + speed))
+                x.genBuffers(gl)
+            }
+        }
+        else if (x.getRadius() < 0.3) {
             vertices = x.getVertices()
             for (var i = 0; i < vertices.length; i += 3) {
                 vertices[i] = ((vertices[i] - x.getx()) * speed) + x.getx();
@@ -36,7 +48,6 @@ function endGame(circles) {
         if (circles[i].getComplete() == true)
             count += 1;
     }
-    console.log(count)
     if (count > 1)
         return true;
     return false;
@@ -62,7 +73,6 @@ function drawGameOver(ctx) {
 }
 
 function checkCollision(circles, index) {
-    console.log(circles[index])
     for (var i = 1; i < circles.length; i++) {
         if (i == index || circles[i] == null)
             continue;
@@ -72,3 +82,9 @@ function checkCollision(circles, index) {
     return -1;
 }
 
+function poisonBomb(x, y, shader, gl) {
+    var outer = new Circle(x, y, 0.01, shader, gl);
+    outer.setColour(0, 1, 0, 1);
+    outer.setPoison(true);
+    return outer;
+}

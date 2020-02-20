@@ -17,6 +17,7 @@ class Circle {
         this.numIndices = 0;
         this.colour = [x + 0.2, y + 0.2, 0.5, 1];
         this.complete = false;
+        this.poison = false;
         //Generate points of the circle
         this.generate();
 
@@ -87,9 +88,6 @@ class Circle {
         var newRadius = Math.sqrt(((a1 + a2) / 3.14))
         if (newRadius > 0.3)
             newRadius = 0.3
-        console.log(a1)
-        console.log(a2)
-        console.log(newRadius)
         this.setRadius(newRadius) 
         this.generate()
         this.genBuffers(gl)
@@ -129,6 +127,12 @@ class Circle {
     setComplete(set) {
         this.complete = set;
     }
+    setColour(r, g, b, a){
+        this.colour = [r, g, b, a]
+    }
+    setPoison(poison) {
+        this.poison = poison
+    }
 
     getx() {
         return this.x;
@@ -150,6 +154,9 @@ class Circle {
     }
     getComplete() {
         return this.complete;
+    }
+    getPoison() { 
+        return this.poison
     }
 
     getRandomPoint() {

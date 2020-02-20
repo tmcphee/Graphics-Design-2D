@@ -1,5 +1,5 @@
 function main() {
-  console.log("hi")
+  console.log("program start")
   const canvas = document.querySelector("#glCanvas");
   const scoreCanvas = document.getElementById("score");
   const goCanvas = document.getElementById("gameOver");
@@ -63,14 +63,36 @@ function main() {
     x = x - 1;
     y = (y - 1) * -1;
     for (var i = 0; i < circles.length; i++) {
-      if (circles[i] != null && circles[i].collision(x, y)) {
+      if (circles[i].getPoison() != true && circles[i] != null && circles[i].collision(x, y)) {
         score = score + ((0.31 - circles[i].getRadius()) * 10)
         circles[i] = null;
       }
     }
+    console.log(x)
+    console.log(y)
     circles = circles.filter(x => x != null);
   };
   canvas.addEventListener("click", mouseClick, false);
+  //Function to detect mouse clicks
+  var rightMouseClick = function (e) {
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect()
+    var x = event.clientX - rect.left
+    var y = event.clientY - rect.top
+    x = (x / rect.right) * 2;
+    y = (y / rect.bottom) * 2;
+    x = x - 1;
+    y = (y - 1) * -1;
+    for (var i = 0; i < circles.length; i++) {
+      if (circles[i].getPoison() != true && circles[i] != null && circles[i].collision(x, y)) {
+        score = score + ((0.31 - circles[i].getRadius()) * 10)
+        circles[i] = poisonBomb(x, y, program, gl);
+      }
+    }
+    circles = circles.filter(x => x != null);
+    return false;
+  };
+  canvas.addEventListener('contextmenu', rightMouseClick, false);
   //Game Loop (Needed so window only draws circles 60 times per second)
   window.requestAnimationFrame(animate);
 
@@ -92,13 +114,17 @@ function main() {
       var check = checkCollision(circles, i)
       if (check == -1) {
         circles[i].draw(canvas);
+      } else if (circles[i].getPoison() == true) {
+        circles[check] = null;
+      } else if (circles[check].getPoison() == true) {
+        circles[i] = null;
       } else if (check > i) {
         circles[i] = circles[i].absorb(circles[check], gl);
         circles[check] = null;
         circles[i].draw(canvas);
-      }
+      } 
     }
-    circles = circles.filter(x => x != null);
+    circles = circles.filter(x => x != null && x.getRadius() <= 1.3);
 
     drawScore(score, ctx)
     if (!endGame(circles))

@@ -83,7 +83,7 @@ class Circle {
 
     absorb(circle, gl) {
         var a1 = ((this.getRadius() * this.getRadius()) * 3.14)
-        var a2 = (((circle.getRadius() * circle.getRadius()) * 3.14) / 10)
+        var a2 = (((circle.getRadius() * circle.getRadius()) * 3.14) / 5)
         var newRadius = Math.sqrt(((a1 + a2) / 3.14))
         if (newRadius > 0.3)
             newRadius = 0.3
